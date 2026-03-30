@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<AssemblyName>events.backend.Application</AssemblyName>
+	<RootNamespace>events.backend.Application</RootNamespace>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+		<PackageReference Include="MediatR" Version="12.4.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.0" />
+	</ItemGroup>
+
+  <ItemGroup>
+		<ProjectReference Include="..\events.backend.CrossCutting\events.backend.CrossCutting.csproj" />
+		<ProjectReference Include="..\events.backend.Domain\events.backend.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
+

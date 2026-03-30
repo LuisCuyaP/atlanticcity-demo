@@ -1,0 +1,49 @@
+version: '3.4'
+
+services:
+  EventsDb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: events-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "TuPasswordFuerte123*"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+  
+  messagebroker:
+    image: rabbitmq:management
+    container_name: messagebroker
+    hostname: events-mq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  distributedcache:
+    image: redis
+    container_name: distributedcache
+    restart: always
+    ports:
+      - "6379:6379"
+
+  notificationapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: notification-api
+    depends_on:
+      - EventsDb
+      - messagebroker
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__EventsConnectionString: Server=EventsDb;Database=EVENTS;User Id=sa;Password=TuPasswordFuerte123*;Encrypt=False;TrustServerCertificate=True
+      MessageBroker__Host: amqp://messagebroker:5672
+      MessageBroker__UserName: guest
+      MessageBroker__Password: guest
+    ports:
+      - "5142:8080"

@@ -1,0 +1,18 @@
+**/.git
+**/.vs
+**/.vscode
+
+**/bin
+**/obj
+
+**/*.user
+**/*.suo
+**/*.cache
+
+**/*.mdf
+**/*.ldf
+
+**/TestResults
+
+# Docker artifacts
+**/docker-compose*.yml

@@ -1,0 +1,50 @@
+version: '3.4'
+
+services:
+  events-api:
+    build:
+      context: .
+      dockerfile: events.backend.API/Dockerfile
+    container_name: events-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      EventsConnectionString: "Server=EventsDb;Database=EVENTS;User Id=sa;Password=TuPasswordFuerte123*;Encrypt=False;TrustServerCertificate=True"
+      MessageBroker__Host: "amqp://messagebroker:5672"
+      MessageBroker__UserName: "guest"
+      MessageBroker__Password: "guest"
+      Redis: "distributedcache:6379"
+    depends_on:
+      - EventsDb
+      - messagebroker
+      - distributedcache
+    ports:
+      - "8080:8080"
+
+  EventsDb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: events-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "TuPasswordFuerte123*"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+  
+  messagebroker:
+    image: rabbitmq:management
+    container_name: messagebroker
+    hostname: events-mq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  distributedcache:
+    image: redis
+    container_name: distributedcache
+    restart: always
+    ports:
+      - "6379:6379"

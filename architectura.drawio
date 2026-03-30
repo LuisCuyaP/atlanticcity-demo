@@ -1,0 +1,64 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0" version="29.6.6">
+  <diagram id="architecture" name="Architecture">
+    <mxGraphModel dx="1418" dy="788" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="client" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#663333;" value="Cliente / App" vertex="1">
+          <mxGeometry height="60" width="170" x="10" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="eventsApi" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6ecff;strokeColor=#334466;" value="events.backend.API&#xa;(HTTP + JWT)" vertex="1">
+          <mxGeometry height="90" width="220" x="330" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="notifSvc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6ecff;strokeColor=#334466;" value="notification.backend&#xa;(Consumer / Worker)" vertex="1">
+          <mxGeometry height="90" width="240" x="780" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="sql" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#e6ffe6;strokeColor=#334433;" value="SQL Server&#xa;EventsDb" vertex="1">
+          <mxGeometry height="110" width="180" x="200" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#e6ffe6;strokeColor=#334433;" value="Redis&#xa;distributedcache" vertex="1">
+          <mxGeometry height="110" width="180" x="460" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="rabbit" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6ffe6;strokeColor=#334433;" value="RabbitMQ&#xa;messagebroker" vertex="1">
+          <mxGeometry height="80" width="180" x="810" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="email" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6ffe6;strokeColor=#334433;" value="Email Provider&#xa;(SMTP/Gateway)" vertex="1">
+          <mxGeometry height="70" width="120" x="1280" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="e_client_login" edge="1" parent="1" source="client" style="endArrow=block;html=1;rounded=0;strokeColor=#333333;" target="eventsApi" value="HTTPS&#xa;POST /auth/login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_client_get" edge="1" parent="1" source="client" style="endArrow=block;html=1;rounded=0;strokeColor=#333333;" target="eventsApi" value="HTTPS&#xa;GET /events&#xa;Bearer JWT">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="210" as="sourcePoint" />
+            <mxPoint x="280" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_client_post" edge="1" parent="1" source="client" style="endArrow=block;html=1;rounded=0;strokeColor=#333333;" target="eventsApi" value="HTTPS&#xa;POST /events&#xa;Bearer JWT">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="250" as="sourcePoint" />
+            <mxPoint x="280" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_events_sql" edge="1" parent="1" source="eventsApi" style="endArrow=block;html=1;rounded=0;strokeColor=#333333;" target="sql" value="Persist Event&#xa;(EF Core)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_events_redis" edge="1" parent="1" source="eventsApi" style="endArrow=block;startArrow=block;html=1;rounded=0;strokeColor=#333333;" target="redis" value="Cache-aside&#xa;(events list)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_events_rabbit" edge="1" parent="1" source="eventsApi" style="endArrow=block;html=1;rounded=0;strokeColor=#333333;" target="rabbit" value="Publish&#xa;EventCreatedIntegrationEvent">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_rabbit_notif" edge="1" parent="1" source="rabbit" style="endArrow=block;html=1;rounded=0;strokeColor=#333333;" target="notifSvc" value="Consume">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_notif_email" edge="1" parent="1" source="notifSvc" style="endArrow=block;html=1;rounded=0;strokeColor=#333333;" target="email" value="Handle&#xa;EventCreatedIntegrationEventHandler&#xa;Send notification">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note_security" parent="1" style="shape=note;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Seguridad\n- JWT Bearer en API\n- Roles en claims\n- Broker = boundary no confiable\n  (valida + idempotencia en consumer)" vertex="1">
+          <mxGeometry height="140" width="320" x="1070" y="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
